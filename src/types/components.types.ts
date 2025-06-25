@@ -8,6 +8,7 @@ export interface HierarchyTableProps {
 // Jeden řádek tabulky - vše co řádek musí vědět
 export interface TableRowProps {
   item: HierarchyItem;
+  level: number;
   path: number[];
   isExpanded: boolean;
   onToggleExpand: (path: number[]) => void;
