@@ -8,7 +8,7 @@ enableMapSet();
 interface HierarchyStore {
   data: HierarchyItem[];
   expandedItems: Set<string>;
-
+  setExpandedItems: (items: Set<string>) => void;
   setData: (data: HierarchyItem[]) => void;
   toggleExpanded: (itemId: string) => void;
   deleteItem: (path: number[]) => void;
@@ -23,7 +23,6 @@ export const useHierarchyStore = create<HierarchyStore>()(
     setData: (data: HierarchyItem[]) => {
       set((state) => {
         state.data = data;
-        state.expandedItems = new Set();
       });
     },
 
@@ -36,7 +35,11 @@ export const useHierarchyStore = create<HierarchyStore>()(
         }
       });
     },
-
+    setExpandedItems: (items: Set<string>) => {
+      set((state) => {
+        state.expandedItems = new Set(items);
+      });
+    },
     deleteItem: (path) => {
       set((state) => {
         const removeItemAtPath = (
