@@ -1,4 +1,4 @@
-import type { HierarchyItem } from "./hierarchy";
+import type { HierarchyItem } from "./hierarchy.types";
 
 // Hlavní komponenta tabulky - co potřebuje
 export interface HierarchyTableProps {

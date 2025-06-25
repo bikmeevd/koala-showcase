@@ -1,4 +1,4 @@
-import type { HierarchyItem } from "./hierarchy";
+import type { HierarchyItem } from "./hierarchy.types";
 
 // Stav celé aplikace - co si pamatuje
 export interface HierarchyState {
