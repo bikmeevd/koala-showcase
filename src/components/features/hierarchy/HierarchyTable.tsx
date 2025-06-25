@@ -1,4 +1,3 @@
-import type { HierarchyTableProps } from "@/types";
 import {
   Table,
   TableBody,
@@ -9,10 +8,10 @@ import {
 } from "@/components/ui/table";
 import HierarchyRow from "./HierarchyRow";
 import { TABLE_CONFIGS } from "@/config/table-config";
+import { useHierarchyStore } from "@/store";
 
-const HierarchyTable = (props: HierarchyTableProps) => {
-  const { data, onItemDelete } = props;
-
+const HierarchyTable = () => {
+  const { data } = useHierarchyStore();
   return (
     <div className="rounded-md border">
       <Table>
@@ -33,7 +32,6 @@ const HierarchyTable = (props: HierarchyTableProps) => {
                 level={0}
                 path={[index]}
                 dataType="character"
-                onDelete={onItemDelete}
               />
             ))
           ) : (
