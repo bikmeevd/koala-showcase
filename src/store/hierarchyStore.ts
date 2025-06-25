@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import type { HierarchyItem } from "@/types";
+import { enableMapSet } from "immer";
+
+enableMapSet();
 
 interface HierarchyStore {
   data: HierarchyItem[];
@@ -8,8 +11,7 @@ interface HierarchyStore {
 
   setData: (data: HierarchyItem[]) => void;
   toggleExpanded: (itemId: string) => void;
-  delete: (path: number[]) => void;
-
+  deleteItem: (path: number[]) => void;
   isExpanded: (itemId: string) => boolean;
 }
 
@@ -17,12 +19,14 @@ export const useHierarchyStore = create<HierarchyStore>()(
   immer((set, get) => ({
     data: [],
     expandedItems: new Set<string>(),
+
     setData: (data: HierarchyItem[]) => {
       set((state) => {
         state.data = data;
         state.expandedItems = new Set();
       });
     },
+
     toggleExpanded: (itemId: string) => {
       set((state) => {
         if (state.expandedItems.has(itemId)) {
@@ -32,27 +36,49 @@ export const useHierarchyStore = create<HierarchyStore>()(
         }
       });
     },
-    delete: (path) =>
-      set((state) => {
-        const remove = (
-          level: HierarchyItem[] | undefined,
-          depth = 0
-        ): void => {
-          if (!level) return;
-          const idx = path[depth];
 
-          if (depth === path.length - 1) {
-            level.splice(idx, 1);
-            return;
+    deleteItem: (path) => {
+      set((state) => {
+        const removeItemAtPath = (
+          items: HierarchyItem[],
+          currentPath: number[],
+          depth = 0
+        ): boolean => {
+          if (depth >= currentPath.length) return false;
+
+          const index = currentPath[depth];
+
+          if (depth === currentPath.length - 1) {
+            if (index >= 0 && index < items.length) {
+              items.splice(index, 1);
+              return true;
+            }
+            return false;
           }
-          const nextItem = level[idx];
-          for (const group of Object.values(nextItem.children)) {
-            remove(group.records, depth + 1);
+
+          if (index >= 0 && index < items.length) {
+            const currentItem = items[index];
+
+            for (const [_, childGroup] of Object.entries(
+              currentItem.children
+            )) {
+              if (childGroup?.records && Array.isArray(childGroup.records)) {
+                if (
+                  removeItemAtPath(childGroup.records, currentPath, depth + 1)
+                ) {
+                  return true;
+                }
+              }
+            }
           }
+
+          return false;
         };
 
-        remove(state.data, 0);
-      }),
+        removeItemAtPath(state.data, path);
+      });
+    },
+
     isExpanded: (itemId: string) => {
       return get().expandedItems.has(itemId);
     },
