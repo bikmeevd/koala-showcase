@@ -3,7 +3,7 @@ import exampleData from "../example-data.json";
 import type { HierarchyItem } from "./types";
 function App() {
   return (
-    <main className="container mx-auto p-6">
+    <main className="container mx-auto">
       <HierarchyTable data={exampleData as HierarchyItem[]} />
     </main>
   );
