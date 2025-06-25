@@ -18,7 +18,10 @@ export const useHierarchyStore = create<HierarchyStore>()(
     data: [],
     expandedItems: new Set<string>(),
     setData: (data: HierarchyItem[]) => {
-      set((state) => {});
+      set((state) => {
+        state.data = data;
+        state.expandedItems = new Set();
+      });
     },
     toggleExpanded: (itemId: string) => {
       set((state) => {});
