@@ -1,39 +1,51 @@
-// Údaje o postavě - základní info o každém hrdinovi
+export type Gender = "female" | "m" | "M" | "F" | "male" | "mouse" | "";
+
+export type BooleanString = "true" | "false";
+
+// Údaje o postavě
 export interface CharacterData {
   ID: string;
   Name: string;
-  Gender: string;
+  Gender: Gender;
   Ability: string;
   "Minimal distance": string;
   Weight: string;
   Born: string;
   "In space since": string;
   "Beer consumption (l/y)": string;
-  "Knows the answer?": string;
+  "Knows the answer?": BooleanString;
 }
+
 // Údaje o nepříteli postavy
 export interface NemesisData {
   ID: string;
   "Character ID": string;
-  "Is alive?": string;
+  "Is alive?": BooleanString | "";
   Years: string;
 }
+
 // Tajné kódy nepřátel
 export interface SecreteData {
   ID: string;
   "Nemesis ID": string;
   "Secrete Code": string;
 }
-// Jakýkoliv typ dat v tabulce
+
+// Jakýkoliv typ dat
 export type ItemData = CharacterData | NemesisData | SecreteData;
-// Kontejner pro děti - různé typy vztahů
+
 export interface ChildrenContainer {
-  [relationshipType: string]: {
+  has_nemesis?: {
+    records: HierarchyItem[];
+  };
+  has_secrete?: {
     records: HierarchyItem[];
   };
 }
-// Jeden prvek hierarchie - data + jejich děti
+
 export interface HierarchyItem {
   data: ItemData;
   children: ChildrenContainer;
 }
+
+export type FullData = HierarchyItem[];
