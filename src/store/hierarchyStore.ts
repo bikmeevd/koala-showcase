@@ -8,7 +8,7 @@ interface HierarchyStore {
 
   setData: (data: HierarchyItem[]) => void;
   toggleExpanded: (itemId: string) => void;
-  deleteItem: (itemId: string, path: number[]) => void;
+  delete: (path: number[]) => void;
 
   isExpanded: (itemId: string) => boolean;
 }
@@ -32,10 +32,27 @@ export const useHierarchyStore = create<HierarchyStore>()(
         }
       });
     },
+    delete: (path) =>
+      set((state) => {
+        const remove = (
+          level: HierarchyItem[] | undefined,
+          depth = 0
+        ): void => {
+          if (!level) return;
+          const idx = path[depth];
 
-    deleteItem: (itemId: string, path: number[]) => {
-      set((state) => {});
-    },
+          if (depth === path.length - 1) {
+            level.splice(idx, 1);
+            return;
+          }
+          const nextItem = level[idx];
+          for (const group of Object.values(nextItem.children)) {
+            remove(group.records, depth + 1);
+          }
+        };
+
+        remove(state.data, 0);
+      }),
     isExpanded: (itemId: string) => {
       return get().expandedItems.has(itemId);
     },
