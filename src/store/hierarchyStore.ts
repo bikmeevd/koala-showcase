@@ -24,7 +24,13 @@ export const useHierarchyStore = create<HierarchyStore>()(
       });
     },
     toggleExpanded: (itemId: string) => {
-      set((state) => {});
+      set((state) => {
+        if (state.expandedItems.has(itemId)) {
+          state.expandedItems.delete(itemId);
+        } else {
+          state.expandedItems.add(itemId);
+        }
+      });
     },
 
     deleteItem: (itemId: string, path: number[]) => {
